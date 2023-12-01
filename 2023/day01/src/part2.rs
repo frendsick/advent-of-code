@@ -30,11 +30,9 @@ fn combine_first_and_last_number(input: &str) -> u32 {
         remaining_line.chars().next().unwrap().to_digit(10)
     });
 
-    let first = numbers.next().unwrap();
-    match numbers.last() {
-        Some(number) => first * 10 + number,
-        None => first * 10 + first,
-    }
+    let first: u32 = numbers.next().unwrap();
+    let last: u32 = numbers.last().unwrap_or(first);
+    first * 10 + last
 }
 
 #[cfg(test)]
