@@ -4,12 +4,12 @@ use std::collections::HashMap;
 pub fn solve(input: &str) -> String {
     input
         .lines()
-        .map(calculate_power_of_fewest_cubes)
+        .map(calculate_product_of_fewest_cubes)
         .sum::<u32>()
         .to_string()
 }
 
-fn calculate_power_of_fewest_cubes(input: &str) -> u32 {
+fn calculate_product_of_fewest_cubes(input: &str) -> u32 {
     let mut cube_map: HashMap<&str, u32> = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
 
     for part in input.split(&[':', ',', ';']) {
