@@ -32,12 +32,7 @@ fn calculate_power_of_fewest_cubes(input: &str) -> u32 {
             *current_amount = max(*current_amount, cube_amount);
         }
     }
-
-    // Calculate the power of the set of cubes by multiplying them together
-    let mut cube_amounts = cube_map.values();
-    cube_amounts.next().expect("cube amount")
-        * cube_amounts.next().expect("cube amount")
-        * cube_amounts.next().expect("cube amount")
+    cube_map.values().product()
 }
 
 #[cfg(test)]
