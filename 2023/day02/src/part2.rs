@@ -12,9 +12,9 @@ pub fn solve(input: &str) -> String {
 fn calculate_power_of_fewest_cubes(input: &str) -> u32 {
     let mut cube_map: HashMap<&str, u32> = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
 
-    for (index, part) in input.split(&[':', ',', ';']).enumerate() {
+    for part in input.split(&[':', ',', ';']) {
         // Skip over "Game X"
-        if index == 0 {
+        if part.starts_with("Game") {
             continue;
         }
 
@@ -27,6 +27,7 @@ fn calculate_power_of_fewest_cubes(input: &str) -> u32 {
             .expect("valid number");
         let cube_color: &str = color_with_count.next().expect("color");
 
+        // Update the amount of cubes based on which is larger, the parsed amount or the previous one
         let current_amount: u32 = *cube_map.get(cube_color).expect("invalid cube color");
         cube_map.insert(cube_color, max(current_amount, cube_amount));
     }

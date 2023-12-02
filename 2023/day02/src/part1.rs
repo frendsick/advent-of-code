@@ -20,9 +20,9 @@ fn parse_possible_game_id(input: &str) -> Option<u32> {
 }
 
 fn is_possible_game(input: &str) -> bool {
-    for (index, part) in input.split(&[':', ',', ';']).enumerate() {
+    for part in input.split(&[':', ',', ';']) {
         // Skip over "Game X"
-        if index == 0 {
+        if part.starts_with("Game") {
             continue;
         }
 
