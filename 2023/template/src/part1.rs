@@ -7,7 +7,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_process() {
+    fn test_solve() {
         let input = "input";
         let solution = "solution";
         assert_eq!(solution, solve(input));

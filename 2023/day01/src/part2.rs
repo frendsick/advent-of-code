@@ -40,7 +40,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_process() {
+    fn test_solve() {
         let input = "two1nine
 eightwothree
 abcone2threexyz
