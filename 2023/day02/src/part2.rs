@@ -28,8 +28,9 @@ fn calculate_power_of_fewest_cubes(input: &str) -> u32 {
         let cube_color: &str = color_with_count.next().expect("color");
 
         // Update the amount of cubes based on which is larger, the parsed amount or the previous one
-        let current_amount: u32 = *cube_map.get(cube_color).expect("invalid cube color");
-        cube_map.insert(cube_color, max(current_amount, cube_amount));
+        if let Some(current_amount) = cube_map.get_mut(cube_color) {
+            *current_amount = max(*current_amount, cube_amount);
+        }
     }
 
     // Calculate the power of the set of cubes by multiplying them together
