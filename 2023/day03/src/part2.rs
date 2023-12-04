@@ -56,9 +56,10 @@ fn find_touching_numbers(row: usize, col: usize, numbers: &[Positioned]) -> Hash
     neighbors
         .iter()
         .filter_map(|&(maybe_row, maybe_col)| {
-            maybe_row.and_then(|row| {
-                maybe_col.and_then(|col| get_number_from_position(row, col, numbers))
-            })
+            match (maybe_row, maybe_col) {
+                (Some(row), Some(col)) => get_number_from_position(row, col, numbers),
+                _ => None,
+            }
         })
         .collect()
 }
