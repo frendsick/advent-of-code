@@ -1,31 +1,18 @@
 pub fn solve(input: &str) -> String {
-    let result = input
+    input
         .lines()
         .map(combine_first_and_last_number)
-        .sum::<u32>();
-
-    result.to_string()
+        .sum::<u32>()
+        .to_string()
 }
 
 fn combine_first_and_last_number(input: &str) -> u32 {
-    let mut first: Option<u32> = None;
-    let mut last: Option<u32> = None;
+    let digits: Vec<u32> = input
+        .chars()
+        .filter_map(|c| c.to_digit(10))
+        .collect();
 
-    for c in input.chars() {
-        if !c.is_ascii_digit() {
-            continue;
-        }
-
-        let digit = c.to_digit(10).unwrap();
-
-        if first.is_none() {
-            first = Some(digit);
-        }
-
-        last = Some(digit);
-    }
-
-    first.unwrap() * 10 + last.unwrap()
+    digits[0] * 10 + digits.last().unwrap()
 }
 
 #[cfg(test)]
