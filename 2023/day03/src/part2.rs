@@ -62,30 +62,19 @@ fn find_touching_numbers(row: usize, col: usize, numbers: &[Positioned]) -> Vec<
         .collect();
 
     // Remove duplicates and return the found touching numbers
+    touching_numbers.sort();
     touching_numbers.dedup();
     touching_numbers
 }
 
 fn get_number_from_position(row: usize, col: usize, numbers: &[Positioned]) -> Option<u32> {
-    for number in numbers {
-        // We are not in the right row yet
-        if number.row < row {
-            continue;
-        }
-
-        // The number was not found if we went past the possible numbers
-        if number.row > row {
-            return None;
-        }
-
-        // Check if the number overlaps with the position
-        let earliest_index = col.saturating_sub(number.value.len() - 1);
-        if number.col >= earliest_index && number.col <= col {
-            return Some(number.value.parse().expect("number"));
-        }
-    }
-    // No match
-    None
+    numbers
+        .iter()
+        .find(|number| {
+            // Find the possible number at the given position
+            row == number.row && col >= number.col && col < number.col + number.value.len()
+        })
+        .and_then(|number| number.value.parse::<u32>().ok())
 }
 
 // Helper function to find the position (row, col) of a character index in a multiline string
