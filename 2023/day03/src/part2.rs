@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use regex::Regex;
 
 #[derive(Debug, Clone)]
@@ -39,7 +40,7 @@ fn product_of_two_gears(asterisk: &Positioned, numbers: &[Positioned]) -> Option
     None
 }
 
-fn find_touching_numbers(row: usize, col: usize, numbers: &[Positioned]) -> Vec<u32> {
+fn find_touching_numbers(row: usize, col: usize, numbers: &[Positioned]) -> HashSet<u32> {
     let neighbors = [
         (row.checked_sub(1), Some(col)),          // Up
         (row.checked_sub(1), col.checked_sub(1)), // Up-Left
@@ -52,19 +53,14 @@ fn find_touching_numbers(row: usize, col: usize, numbers: &[Positioned]) -> Vec<
     ];
 
     // Filter all touching numbers
-    let mut touching_numbers: Vec<u32> = neighbors
+    neighbors
         .iter()
         .filter_map(|&(maybe_row, maybe_col)| {
             maybe_row.and_then(|row| {
                 maybe_col.and_then(|col| get_number_from_position(row, col, numbers))
             })
         })
-        .collect();
-
-    // Remove duplicates and return the found touching numbers
-    touching_numbers.sort();
-    touching_numbers.dedup();
-    touching_numbers
+        .collect()
 }
 
 fn get_number_from_position(row: usize, col: usize, numbers: &[Positioned]) -> Option<u32> {
