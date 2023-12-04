@@ -79,22 +79,16 @@ fn get_number_from_position(row: usize, col: usize, numbers: &[Positioned]) -> O
 
 // Helper function to find the position (row, col) of a character index in a multiline string
 fn find_position(input: &str, index: usize) -> (usize, usize) {
-    let mut row = 0;
-    let mut col = 0;
-
-    for (i, c) in input.chars().enumerate() {
-        if i == index {
-            break;
-        }
-        if c == '\n' {
-            row += 1;
-            col = 0;
-        } else {
-            col += 1;
-        }
-    }
-
-    (row, col)
+    input
+        .chars()
+        .take(index)
+        .fold((0, 0), |(row, col), c| {
+            if c == '\n' {
+                (row + 1, 0)
+            } else {
+                (row, col + 1)
+            }
+        })
 }
 
 #[cfg(test)]
