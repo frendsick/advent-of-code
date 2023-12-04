@@ -82,11 +82,10 @@ fn find_position(input: &str, index: usize) -> (usize, usize) {
     input
         .chars()
         .take(index)
-        .fold((0, 0), |(row, col), c| {
-            if c == '\n' {
-                (row + 1, 0)
-            } else {
-                (row, col + 1)
+        .fold((0, 0), |(row, col), character| {
+            match character {
+                '\n' => (row + 1, 0),
+                _ => (row, col + 1),
             }
         })
 }
