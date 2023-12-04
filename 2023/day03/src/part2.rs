@@ -21,13 +21,16 @@ pub fn solve(input: &str) -> String {
 
 fn find_by_pattern(input: &str, pattern: &str) -> Vec<Positioned> {
     let number_pattern = Regex::new(pattern).expect("valid pattern");
-    let mut numbers = Vec::new();
-    for mat in number_pattern.captures_iter(input) {
-        let value: String = mat[0].to_string();
-        let (row, col) = find_position(input, mat.get(0).expect("match").start());
-        numbers.push(Positioned { row, col, value });
-    }
-    numbers
+
+    number_pattern
+        .captures_iter(input)
+        .map(|mat| {
+            let value: String = mat[0].to_string();
+            let index: usize = mat.get(0).expect("match").start();
+            let (row, col) = find_position(input, index);
+            Positioned { row, col, value }
+        })
+        .collect()
 }
 
 fn product_of_two_gears(asterisk: &Positioned, numbers: &[Positioned]) -> Option<u32> {
