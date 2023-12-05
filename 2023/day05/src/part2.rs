@@ -19,7 +19,7 @@ pub fn solve(input: &str) -> String {
         generate_backwards_conversion_maps(&mut lines);
 
     // Find the smallest location that has a valid seed
-    let mut location = 0;
+    let mut location = *seeds.iter().min().expect("smallest seed number");
     loop {
         let possible_seed = conversion_maps_container
             .iter()
