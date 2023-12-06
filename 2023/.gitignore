@@ -12,3 +12,7 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+
+# Do not include my personal puzzle inputs
+input*.txt
+!template/input.txt
