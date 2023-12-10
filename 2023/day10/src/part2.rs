@@ -103,74 +103,70 @@ fn get_loop_coordinates(matrix: &[Vec<Tile>]) -> Vec<(usize, usize)> {
     visited
 }
 
+fn move_up(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
+    *direction = Direction::Up;
+    current_coordinate.0 -= 1;
+}
+
+fn move_down(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
+    *direction = Direction::Down;
+    current_coordinate.0 += 1;
+}
+
+fn move_left(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
+    *direction = Direction::Left;
+    current_coordinate.1 -= 1;
+}
+
+fn move_right(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
+    *direction = Direction::Right;
+    current_coordinate.1 += 1;
+}
+
 fn move_vertical(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Up => current_coordinate.0 -= 1,
-        Direction::Down => current_coordinate.0 += 1,
+        Direction::Up => move_up(current_coordinate, direction),
+        Direction::Down => move_down(current_coordinate, direction),
         _ => unreachable!("vertical pipe while not going up or down"),
     }
 }
 
 fn move_horizontal(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Left => current_coordinate.1 -= 1,
-        Direction::Right => current_coordinate.1 += 1,
+        Direction::Left => move_left(current_coordinate, direction),
+        Direction::Right => move_right(current_coordinate, direction),
         _ => unreachable!("horizontal pipe while not going left or right"),
     }
 }
 
 fn move_bend_ne(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Down => {
-            *direction = Direction::Right;
-            current_coordinate.1 += 1;
-        }
-        Direction::Left => {
-            *direction = Direction::Up;
-            current_coordinate.0 -= 1;
-        }
+        Direction::Down => move_right(current_coordinate, direction),
+        Direction::Left => move_up(current_coordinate, direction),
         _ => unreachable!("NE bend while not going down or left"),
     }
 }
 
 fn move_bend_nw(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Down => {
-            *direction = Direction::Left;
-            current_coordinate.1 -= 1;
-        }
-        Direction::Right => {
-            *direction = Direction::Up;
-            current_coordinate.0 -= 1;
-        }
+        Direction::Down => move_left(current_coordinate, direction),
+        Direction::Right => move_up(current_coordinate, direction),
         _ => unreachable!("NW bend while not going down or right"),
     }
 }
 
 fn move_bend_se(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Up => {
-            *direction = Direction::Right;
-            current_coordinate.1 += 1;
-        }
-        Direction::Left => {
-            *direction = Direction::Down;
-            current_coordinate.0 += 1;
-        }
+        Direction::Up => move_right(current_coordinate, direction),
+        Direction::Left => move_down(current_coordinate, direction),
         _ => unreachable!("SE bend while not going up or left"),
     }
 }
 
 fn move_bend_sw(current_coordinate: &mut (usize, usize), direction: &mut Direction) {
     match direction {
-        Direction::Up => {
-            *direction = Direction::Left;
-            current_coordinate.1 -= 1;
-        }
-        Direction::Right => {
-            *direction = Direction::Down;
-            current_coordinate.0 += 1;
-        }
+        Direction::Up => move_left(current_coordinate, direction),
+        Direction::Right => move_down(current_coordinate, direction),
         _ => unreachable!("NE bend while not going down or left"),
     }
 }
