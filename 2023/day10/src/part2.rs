@@ -35,27 +35,30 @@ fn parse_tiles(input: &str) -> Vec<Tile> {
             '7' => Tile::BendSW,
             '.' => Tile::Ground,
             'S' => Tile::Start,
-            _ => unreachable!(),
+            _ => unreachable!("Unknown tile character"),
         })
         .collect()
 }
 
 fn calculate_tiles_within_loop(matrix: Vec<Vec<Tile>>, visited: Vec<(usize, usize)>) -> u32 {
-    let mut in_loop = false;
+    let mut in_loop: bool = false;
     let mut tiles_within_loop: u32 = 0;
     for (y, row) in matrix.iter().enumerate() {
         for (x, tile) in row.iter().enumerate() {
-            if !visited.contains(&(y, x)) {
+            // Only tiles that are not part of the loop can be inside the loop
+            let tile_visited: bool = visited.contains(&(y, x));
+            if !tile_visited {
                 if in_loop {
                     tiles_within_loop += 1;
                 }
                 continue;
             }
+
+            // The border tiles coming from left to right swap `in_loop` boolean
             match tile {
-                Tile::VerticalPipe => in_loop = !in_loop,
-                Tile::Start => in_loop = !in_loop,
-                Tile::BendSE => in_loop = !in_loop,
-                Tile::BendSW => in_loop = !in_loop,
+                Tile::VerticalPipe | Tile::BendSE | Tile::BendSW | Tile::Start => {
+                    in_loop = !in_loop
+                }
                 _ => {}
             }
         }
@@ -76,11 +79,13 @@ fn get_loop_coordinates(matrix: &[Vec<Tile>]) -> Vec<(usize, usize)> {
     let start_coordinate = find_start_coordinate(matrix);
 
     // Start by going down
+    // Note: This might not work if there is no valid path down from the start step
     let mut current_coordinate = (start_coordinate.0 + 1, start_coordinate.1);
     let mut direction = Direction::Down;
-    let mut visited: Vec<(usize, usize)> = Vec::new();
 
-    // Go through the loop until we get back to the Start tile
+    // Go through the loop and gather all visited coordinates
+    // until we get back to the Start tile
+    let mut visited: Vec<(usize, usize)> = Vec::new();
     loop {
         visited.push(current_coordinate);
         let (y, x) = current_coordinate;
@@ -95,8 +100,6 @@ fn get_loop_coordinates(matrix: &[Vec<Tile>]) -> Vec<(usize, usize)> {
             Tile::Start => break,
         }
     }
-
-    // The farthest point in the loop is in the middle
     visited
 }
 
