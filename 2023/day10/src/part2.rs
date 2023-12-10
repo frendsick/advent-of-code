@@ -167,7 +167,7 @@ fn move_bend_sw(current_coordinate: &mut (usize, usize), direction: &mut Directi
     match direction {
         Direction::Up => move_left(current_coordinate, direction),
         Direction::Right => move_down(current_coordinate, direction),
-        _ => unreachable!("NE bend while not going down or left"),
+        _ => unreachable!("SW bend while not going up or right"),
     }
 }
 
