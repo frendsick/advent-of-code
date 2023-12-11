@@ -46,30 +46,35 @@ fn find_distances_to_pairs(
         .collect::<Vec<u64>>()
 }
 
-fn find_distance_between_galaxies(source: &Coordinate, target: &Coordinate, matrix: &[Vec<Tile>]) -> u64 {
-    let mut distance: u64 = 0;
-
+fn find_distance_between_galaxies(
+    source: &Coordinate,
+    target: &Coordinate,
+    matrix: &[Vec<Tile>],
+) -> u64 {
     let (min_x, max_x) = (min(source.x, target.x), max(source.x, target.x));
     let (min_y, max_y) = (min(source.y, target.y), max(source.y, target.y));
 
-    // Go vertically as many tiles as needed
-    for y in min_y..max_y {
-        if matrix[y][min_x] == Tile::Expanded {
-            distance += GALAXY_EXPANSION_RATE;
-        } else {
-            distance += 1;
-        }
-    }
+    let vertical_distance = (min_y..max_y)
+        .map(|y| {
+            if matrix[y][min_x] == Tile::Expanded {
+                GALAXY_EXPANSION_RATE
+            } else {
+                1
+            }
+        })
+        .sum::<u64>();
 
-    // Go horizontally as many tiles as needed
-    for x in min_x..max_x {
-        if matrix[min_y][x] == Tile::Expanded {
-            distance += GALAXY_EXPANSION_RATE;
-        } else {
-            distance += 1;
-        }
-    }
-    distance
+    let horizontal_distance = (min_x..max_x)
+        .map(|x| {
+            if matrix[min_y][x] == Tile::Expanded {
+                GALAXY_EXPANSION_RATE
+            } else {
+                1
+            }
+        })
+        .sum::<u64>();
+
+    vertical_distance + horizontal_distance
 }
 
 fn expand_empty_rows_and_columns(matrix: &[Vec<Tile>]) -> Vec<Vec<Tile>> {
@@ -85,13 +90,14 @@ fn expand_matrix(
 ) -> Vec<Vec<Tile>> {
     let mut expanded_matrix: Vec<Vec<Tile>> = matrix.to_owned();
 
+    // Mark empty rows as Expanded
     for y in empty_rows {
         for x in 0..matrix[0].len() {
             expanded_matrix[y][x] = Tile::Expanded;
         }
     }
 
-    // Expand empty columns to two
+    // Mark empty columns as Expanded
     expanded_matrix
         .into_iter()
         .map(|mut row| {
