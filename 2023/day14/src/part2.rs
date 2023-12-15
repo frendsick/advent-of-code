@@ -24,6 +24,13 @@ enum Tile {
     RoundRock,
 }
 
+enum Direction {
+    North,
+    South,
+    East,
+    West,
+}
+
 fn parse_tiles_from_line(line: &str) -> Vec<Tile> {
     line.chars()
         .map(|c| match c {
@@ -52,10 +59,10 @@ fn get_loop_info(matrices: Vec<TileMatrix>) -> (usize, usize) {
 fn cycle_matrix_until_loop_is_found(matrix: &mut TileMatrix, cycles: usize) -> Vec<TileMatrix> {
     let mut matrices: Vec<TileMatrix> = vec![matrix.clone()];
     for _ in 0..cycles {
-        tilt_north(matrix);
-        tilt_west(matrix);
-        tilt_south(matrix);
-        tilt_east(matrix);
+        tilt_lever(matrix, Direction::North);
+        tilt_lever(matrix, Direction::West);
+        tilt_lever(matrix, Direction::South);
+        tilt_lever(matrix, Direction::East);
         if matrices.contains(matrix) {
             matrices.push(matrix.clone());
             return matrices;
@@ -65,41 +72,16 @@ fn cycle_matrix_until_loop_is_found(matrix: &mut TileMatrix, cycles: usize) -> V
     unreachable!("Puzzle input should result in a loop");
 }
 
-fn tilt_north(matrix: &mut TileMatrix) {
-    for x in 0..matrix[0].len() {
-        for y in 0..matrix.len() {
-            if matrix[y][x] == Tile::RoundRock {
-                slide_north(matrix, (x, y))
-            }
-        }
-    }
-}
-
-fn tilt_south(matrix: &mut TileMatrix) {
-    for x in 0..matrix[0].len() {
-        for y in (0..matrix.len()).rev() {
-            if matrix[y][x] == Tile::RoundRock {
-                slide_south(matrix, (x, y))
-            }
-        }
-    }
-}
-
-fn tilt_east(matrix: &mut TileMatrix) {
-    for y in 0..matrix.len() {
-        for x in (0..matrix[0].len()).rev() {
-            if matrix[y][x] == Tile::RoundRock {
-                slide_east(matrix, (x, y))
-            }
-        }
-    }
-}
-
-fn tilt_west(matrix: &mut TileMatrix) {
-    for y in 0..matrix.len() {
-        for x in 0..matrix[0].len() {
-            if matrix[y][x] == Tile::RoundRock {
-                slide_west(matrix, (x, y))
+fn tilt_lever(matrix: &mut TileMatrix, direction: Direction) {
+    for (y, row) in matrix.clone().iter().enumerate() {
+        for (x, tile) in row.iter().enumerate() {
+            if *tile == Tile::RoundRock {
+                match direction {
+                    Direction::North => slide_north(matrix, (x, y)),
+                    Direction::South => slide_south(matrix, (x, y)),
+                    Direction::East => slide_east(matrix, (x, y)),
+                    Direction::West => slide_west(matrix, (x, y)),
+                }
             }
         }
     }
