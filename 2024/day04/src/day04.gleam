@@ -10,8 +10,8 @@ pub fn main() {
 
   let answer_part1 = part1(input) |> int.to_string
   io.println("Part1: " <> answer_part1)
-  // let answer_part2 = part2(input) |> int.to_string
-  // io.println("Part2: " <> answer_part2)
+  let answer_part2 = part2(input) |> int.to_string
+  io.println("Part2: " <> answer_part2)
 }
 
 pub fn part1(input: String) -> Int {
@@ -29,7 +29,17 @@ pub fn part1(input: String) -> Int {
 }
 
 pub fn part2(input: String) -> Int {
-  todo
+  let coordinates = get_char_coordinates(input)
+
+  // Find X_MAS matches
+  let matches =
+    dict.fold(coordinates, 0, fn(acc, pos, char) {
+      case char {
+        "A" -> acc + x_mas_matches(coordinates, pos)
+        _ -> acc
+      }
+    })
+  matches
 }
 
 fn get_char_coordinates(input: String) -> Dict(#(Int, Int), String) {
@@ -80,4 +90,25 @@ fn xmas_matches(
       }
     })
   matches
+}
+
+fn x_mas_matches(
+  coordinates: Dict(#(Int, Int), String),
+  position: #(Int, Int),
+) -> Int {
+  let #(x, y) = position
+  let diagonals = [
+    #(x - 1, y - 1),
+    #(x + 1, y - 1),
+    #(x + 1, y + 1),
+    #(x - 1, y + 1),
+  ]
+
+  case diagonals |> list.map(fn(pos) { dict.get(coordinates, pos) }) {
+    [Ok("M"), Ok("M"), Ok("S"), Ok("S")] -> 1
+    [Ok("S"), Ok("M"), Ok("M"), Ok("S")] -> 1
+    [Ok("S"), Ok("S"), Ok("M"), Ok("M")] -> 1
+    [Ok("M"), Ok("S"), Ok("S"), Ok("M")] -> 1
+    _ -> 0
+  }
 }
