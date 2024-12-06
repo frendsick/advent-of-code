@@ -7,11 +7,13 @@ import simplifile
 
 pub fn main() {
   let assert Ok(input) = simplifile.read(from: "input.txt")
-  let answer = solve(input) |> int.to_string
-  io.println(answer)
+  let answer_part1 = part1(input) |> int.to_string
+  let answer_part2 = part2(input) |> int.to_string
+  io.println("Part1: " <> answer_part1)
+  io.println("Part2: " <> answer_part2)
 }
 
-pub fn solve(input: String) -> Int {
+pub fn part1(input: String) -> Int {
   let rows = input |> string.trim_end |> string.split("\n")
   let #(left_numbers, right_numbers) = parse_left_and_right_numbers(rows)
 
@@ -23,6 +25,17 @@ pub fn solve(input: String) -> Int {
   let differences =
     list.map2(left_sorted, right_sorted, fn(a, b) { int.absolute_value(a - b) })
   differences |> int.sum
+}
+
+pub fn part2(input: String) -> Int {
+  let rows = input |> string.trim_end |> string.split("\n")
+  let #(left_numbers, right_numbers) = parse_left_and_right_numbers(rows)
+
+  // Calculate similarity score
+  left_numbers
+  |> list.fold(0, fn(acc, number) {
+    acc + number * list.count(right_numbers, fn(x) { x == number })
+  })
 }
 
 fn parse_left_and_right_numbers(rows: List(String)) -> #(List(Int), List(Int)) {
