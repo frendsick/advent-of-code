@@ -16,8 +16,8 @@ pub fn main() {
 
   let answer_part1 = part1(input) |> int.to_string
   io.println("Part1: " <> answer_part1)
-  // let answer_part2 = part2(input) |> int.to_string
-  // io.println("Part2: " <> answer_part2)
+  let answer_part2 = part2(input) |> int.to_string
+  io.println("Part2: " <> answer_part2)
 }
 
 pub fn part1(input: String) -> Int {
@@ -32,7 +32,14 @@ pub fn part1(input: String) -> Int {
 }
 
 pub fn part2(input: String) -> Int {
-  todo
+  // Parse reports from input
+  let rows = input |> string.trim_end |> string.split("\n")
+  let reports = parse_reports(rows)
+
+  // Check how many reports are safe
+  reports
+  |> list.map(fn(report) { report |> safe_subreport_found |> bool.to_int })
+  |> int.sum
 }
 
 fn parse_reports(rows: List(String)) -> List(List(Int)) {
@@ -64,4 +71,15 @@ fn is_report_safe(report: List(Int)) -> Bool {
     list.all(pairs, fn(pair) { safe_step(pair.0, pair.1, Increasing) })
 
   safely_decreasing || safely_increasing
+}
+
+fn safe_subreport_found(report: List(Int)) -> Bool {
+  list.any(get_subreports(report), is_report_safe)
+}
+
+fn get_subreports(report: List(Int)) -> List(List(Int)) {
+  list.index_map(report, fn(_, index) {
+    let #(left, right) = list.split(report, index)
+    left |> list.append(list.drop(right, 1))
+  })
 }
