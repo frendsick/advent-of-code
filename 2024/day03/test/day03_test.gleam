@@ -15,5 +15,5 @@ pub fn part1_test() {
 
 pub fn part2_test() {
   let assert Ok(input) = simplifile.read(from: "input_test.txt")
-  day03.part2(input) |> should.equal(31)
+  day03.part2(input) |> should.equal(48)
 }
