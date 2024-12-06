@@ -15,7 +15,7 @@ pub fn main() {
 }
 
 pub fn part1(input: String) -> Int {
-  let assert Ok(re) = regexp.from_string("mul\\(\\d+,\\d\\)")
+  let assert Ok(re) = regexp.from_string("mul\\(\\d+,\\d+\\)")
   let matches = regexp.scan(re, input)
   matches
   |> list.fold(from: 0, with: fn(acc, match) {
