@@ -2,6 +2,7 @@ import gleam/bool
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/order
 import gleam/result
 import gleam/string
 import simplifile
@@ -11,8 +12,8 @@ pub fn main() {
 
   let answer_part1 = part1(input) |> int.to_string
   io.println("Part1: " <> answer_part1)
-  // let answer_part2 = part2(input) |> int.to_string
-  // io.println("Part2: " <> answer_part2)
+  let answer_part2 = part2(input) |> int.to_string
+  io.println("Part2: " <> answer_part2)
 }
 
 pub fn part1(input: String) -> Int {
@@ -33,7 +34,27 @@ pub fn part1(input: String) -> Int {
 }
 
 pub fn part2(input: String) -> Int {
-  todo
+  // Split sections
+  let assert Ok(#(page_ordering_section, updates_section)) =
+    input |> string.trim_end |> string.split_once("\n\n")
+
+  // Parse sections
+  let rules = parse_rules(page_ordering_section)
+  let updates = parse_updates(updates_section)
+
+  // Filter correct updates
+  let incorrect_updates =
+    list.filter(updates, fn(update) {
+      update |> is_correct_update(rules) |> bool.negate
+    })
+
+  // Sort the updates according to the rules
+  let sorted_updates =
+    incorrect_updates
+    |> list.map(fn(update) { sort_update(update, rules) })
+
+  // Calculate the sum of middlest numbers
+  sorted_updates |> list.map(get_middlest_number) |> int.sum
 }
 
 fn parse_rules(section: String) -> List(#(Int, Int)) {
@@ -58,6 +79,15 @@ fn parse_update(row: String) -> List(Int) {
   |> string.split(",")
   |> list.map(fn(number_string) {
     number_string |> int.parse |> result.unwrap(0)
+  })
+}
+
+fn sort_update(update: List(Int), rules: List(#(Int, Int))) -> List(Int) {
+  list.sort(update, fn(a, b) {
+    case list.contains(rules, #(b, a)) {
+      True -> order.Gt
+      False -> order.Lt
+    }
   })
 }
 
